@@ -1,0 +1,74 @@
+package day1.testcase;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class TC001_Myntra {
+	public static void main(String[] args) throws InterruptedException, IOException {
+		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--disable-notifications");
+		ChromeDriver driver = new ChromeDriver(options);
+		driver.get("https://www.myntra.com/");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		Actions builder = new Actions(driver);
+		builder.moveToElement(driver.findElementByXPath("(//a[text()='Women'])[1]")).perform();
+		builder.click(driver.findElementByLinkText("Jackets & Coats")).perform();
+		String text = driver.findElementByXPath("//span[@class='title-count']").getText();
+		int total_itemcount = Integer.parseInt(text.replaceAll("\\D", ""));
+		int category_1 = Integer.parseInt(driver.findElementByXPath("(//span[@class='categories-num'])[1]").getText().replaceAll("\\D", ""));
+		int category_2 = Integer.parseInt(driver.findElementByXPath("(//span[@class='categories-num'])[2]").getText().replaceAll("\\D", ""));
+		if(total_itemcount==(category_1+category_2)) {
+			driver.findElementByXPath("(//div[@class='common-checkboxIndicator'])[2]").click();
+		}
+		else {
+			System.out.println("Total Count is not matching with sum of catogeries count");
+		}
+		driver.findElementByXPath("//div[@class='brand-more']").click();
+		driver.findElementByXPath("//input[@placeholder='Search brand']").sendKeys("Mango");
+		driver.findElementByXPath("(//span[@class='FilterDirectory-count']/following::div)[1]").click();
+		driver.findElementByXPath("//span[@class='myntraweb-sprite FilterDirectory-close sprites-remove']").click();
+		Thread.sleep(3000);
+		List<WebElement> coat_BrandList = driver.findElementsByXPath("//h3[@class='product-brand']");
+		int count = 0;
+		for (int i=0;i<=coat_BrandList.size()-1;i++) {
+			String brandName = coat_BrandList.get(i).getText();
+			if(!brandName.equalsIgnoreCase("Mango")) {
+			count++;
+			}
+		}
+		if (count > 0) {
+			System.out.println("Not all coat brands are MANGO");
+		} else {
+			System.out.println("All coat brands are MANGO");
+
+		}
+	builder.moveToElement(driver.findElementByXPath("//div[@class='sort-sortBy']")).perform();
+	driver.findElementByXPath("//label[text()='Better Discount']").click();
+	Thread.sleep(3000);
+	System.out.println(driver.getCurrentUrl());
+	List<WebElement> coat_PriceList = driver.findElementsByXPath("//span[@class='product-discountedPrice']");
+	int coat_Price = Integer.parseInt(coat_PriceList.get(0).getText().replaceAll("\\D", ""));
+	System.out.println("Price of first displayed item is Rs."+coat_Price);
+	builder.moveToElement( driver.findElementByXPath("(//h3[@class='product-brand'])[1]")).perform();
+	TakesScreenshot scrShot = ((TakesScreenshot) driver);
+	File SrcFile = scrShot.getScreenshotAs(OutputType.FILE);
+	File DestFile = new File("./day1.testcase Snaps/TC001_Myntra.png");
+	FileUtils.copyFile(SrcFile, DestFile);
+	builder.click(driver.findElementByXPath("//span[@class='product-actionsButton product-wishlist product-prelaunchBtn']")).perform();
+	driver.close();
+	}
+	}
