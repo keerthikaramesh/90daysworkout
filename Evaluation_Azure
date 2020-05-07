@@ -80,8 +80,8 @@ public class ProjectDay_Azure {
 		System.out.println("Estimated monthly price-->"+monthlyPrice);
 		//			13) Click on Export to download the estimate as excel
 		driver.findElementByXPath("//button[text()='Export']").click();
-		Thread.sleep(5000);
-		File file = new File("\"C:\\Users\\keerthika\\Downloads\\ExportedEstimate.xlsx");
+		Thread.sleep(10000);
+		File file = new File("C:\\Users\\keerthika\\Downloads\\ExportedEstimate.xlsx");
 		//			14) Verify the downloded file in the local folder
 		if(file.exists()) {
 			System.out.println("Estimate file downloaded successfully");
@@ -94,9 +94,11 @@ public class ProjectDay_Azure {
 		act.moveToElement(driver.findElementByXPath("//a[text()='Example Scenarios']")).click().build().perform();
 		driver.findElementByXPath("//span[text()='CI/CD for Containers']").click();
 		System.out.println("CI/CD for containers clicked");
-		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]")));
+		Thread.sleep(10000);
+		
 		if(driver.findElementsByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]").size()>0)
 		{
+			wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]")));
 			driver.findElementByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]").click();
 		}
 
@@ -120,7 +122,8 @@ public class ProjectDay_Azure {
 
 		//			18) Export the Estimate*/
 		act.moveToElement(driver.findElementByXPath("//button[text()='Export']")).click().build().perform();;
-		File file1 = new File("C:\\Users\\vinot\\Downloads\\ExportedEstimate (1).xlsx");
+		Thread.sleep(10000);
+		File file1 = new File("C:\\Users\\keerthika\\Downloads\\ExportedEstimate (1).xlsx");
 		if(file1.exists())
 		{
 			System.out.println("Estimate export successful");
