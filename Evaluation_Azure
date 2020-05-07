@@ -1,0 +1,134 @@
+package day1.testcase;
+
+import java.io.File;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class ProjectDay_Azure {
+
+	public static void main(String[] args) throws InterruptedException {
+		//		1) Go to https://azure.microsoft.com/en-in/
+		System.setProperty("webdriver.chrome.driver", "./drivers/chromedriver.exe");
+		System.setProperty("webdriver.chrome.silentOutput", "true");
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--disable-notifications");
+		ChromeDriver driver = new ChromeDriver(options);
+		driver.get("https://azure.microsoft.com/en-in/");
+		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		WebDriverWait wait = new WebDriverWait(driver, 10);
+		//			2) Click on Pricing
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByLinkText("Pricing")));
+		driver.findElementByLinkText("Pricing").click();
+		System.out.println("Pricing clicked");
+		Thread.sleep(1000);
+		//			3) Click on Pricing Calculator
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByLinkText("Pricing calculator")));
+		driver.findElementByLinkText("Pricing calculator").click();
+		System.out.println("Pricing Calculator clicked");
+		Thread.sleep(1000);
+		//			4) Click on Containers
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//button[@data-event-property='containers']")));
+		driver.findElementByXPath("//button[@data-event-property='containers']").click();
+		System.out.println("Containers clicked");
+		Thread.sleep(1000);
+		//			5) Select Container Instances
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("(//span[text()='Easily run containers on Azure without managing servers'])[3]")));
+		driver.findElementByXPath("(//span[text()='Easily run containers on Azure without managing servers'])[3]").click();
+		System.out.println("Container INstances clicked");
+		//			6) Click on Container Instance Added View
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//a[text()='View']")));
+		driver.findElementByXPath("//a[text()='View']").click();
+		Thread.sleep(1000);
+		//			7) Select Region as "South India"
+		WebElement region = driver.findElementByXPath("//select[@name='region']");
+		Select select = new Select(region);
+		select.selectByValue("south-india");
+		System.out.println("South India has been chosen as region");
+		//			8) Set the Duration as 180000 seconds
+		WebElement duration = driver.findElementByXPath("//input[@name='seconds']");
+		duration.sendKeys(Keys.BACK_SPACE);
+		duration.sendKeys("80000");
+		System.out.println("Duration set to 180000 secs");
+		//			9) Select the Memory as 4GB
+		WebElement memory = driver.findElementByXPath("//select[@name='memory']");
+		Select select2 = new Select(memory);
+		select2.selectByValue("4");
+		System.out.println("Memory set to 4GB");
+		Thread.sleep(1000);
+		//			10) Enable SHOW DEV/TEST PRICING
+		driver.executeScript("window.scrollBy(0,650)");
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("//button[@id='devtest-toggler']")));
+		driver.findElementByXPath("//button[@id='devtest-toggler']").click();
+		System.out.println("Show DEV/TEST pricing has been enabled");
+		//			11) Select Indian Rupee  as currency
+		WebElement currency = driver.findElementByXPath("(//select[@aria-label='Currency'])[1]");
+		Select select3 = new Select(currency);
+		select3.selectByValue("INR");
+		System.out.println("Indian Rupee has been chosen as currency");
+		//			12) Print the Estimated monthly price
+		String monthlyPrice = driver.findElementByXPath("//span[text()='Monthly cost']/following::span//span").getText();
+		System.out.println("Estimated monthly price-->"+monthlyPrice);
+		//			13) Click on Export to download the estimate as excel
+		driver.findElementByXPath("//button[text()='Export']").click();
+		Thread.sleep(5000);
+		File file = new File("\"C:\\Users\\keerthika\\Downloads\\ExportedEstimate.xlsx");
+		//			14) Verify the downloded file in the local folder
+		if(file.exists()) {
+			System.out.println("Estimate file downloaded successfully");
+		}
+		else {
+			System.out.println("Estimate download unsuccessful");
+		}
+		//			15) Navigate to Example Scenarios and Select CI/CD for Containers
+		Actions act = new Actions(driver);
+		act.moveToElement(driver.findElementByXPath("//a[text()='Example Scenarios']")).click().build().perform();
+		driver.findElementByXPath("//span[text()='CI/CD for Containers']").click();
+		System.out.println("CI/CD for containers clicked");
+		wait.until(ExpectedConditions.visibilityOf(driver.findElementByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]")));
+		if(driver.findElementsByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]").size()>0)
+		{
+			driver.findElementByXPath("(//div[@class='lp_close-icon lp_icon-white'])[2]").click();
+		}
+
+		//			15) Click Add to Estimate
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[text()='Add to estimate']")));
+		act.moveToElement(driver.findElementByXPath("//button[text()='Add to estimate']")).click().build().perform();;
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[text()='Estimate added!']")));
+		System.out.println("Estimate Added!");
+
+		//			16) Change the Currency as Indian Rupee
+		wait.until(ExpectedConditions.invisibilityOf(driver.findElementByXPath("//span[text()='Estimate added!']")));
+		WebElement ccyElement1 = driver.findElementByXPath("//select[@class='select currency-dropdown']");
+		Select ccyDD1 = new Select(ccyElement1);
+		ccyDD1.selectByValue("INR");
+		ccyDD1.selectByValue("INR");
+		System.out.println("Rupee Selected");
+
+		//			17) Enable SHOW DEV/TEST PRICING
+		act.moveToElement(driver.findElementByXPath("//div[contains(@class,'toggler-slide')]")).click().build().perform();
+		System.out.println("SHOW DEV/TEST PRICING clicked");
+
+		//			18) Export the Estimate*/
+		act.moveToElement(driver.findElementByXPath("//button[text()='Export']")).click().build().perform();;
+		File file1 = new File("C:\\Users\\vinot\\Downloads\\ExportedEstimate (1).xlsx");
+		if(file1.exists())
+		{
+			System.out.println("Estimate export successful");
+		}
+		else
+		{
+			System.out.println("Estimate download is not successful");
+		}
+	}
+
+}
